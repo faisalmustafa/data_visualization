@@ -1,0 +1,80 @@
+---
+title: "Quantitative and Qualitative Data Visualization"
+author: Faisal Mustafa,
+date: November 7, 2025 (Updated on `r format(Sys.Date(), '%B %d, %Y')`)
+output: 
+  github_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## WordCoud
+
+WordCloud can be used to dhow the trend in the data. For this purpose, let's use the data that from ......
+
+```{r cache= TRUE}
+df_wordcloud <- read.csv("https://faisalmustafa.github.io/data_visualization/data/nguyen2026.csv")
+```
+
+```{r cache= TRUE}
+head(df_wordcloud)
+```
+
+Next, let's create a frequency table based on the data, and remove record containing *Not Applicable*.
+
+```{r results='hide', message=FALSE, warning=FALSE, cache = TRUE}
+library(dplyr)
+tb <- as.data.frame(table(df_wordcloud$x)) %>% 
+  filter(Var1 != "Not Applicable")
+```
+
+```{r cache= TRUE}
+head(tb)
+```
+
+Now we are ready to create a Word Cloud based on the data. In this instance, let's use ```wordcloud``` package.
+
+```{r results='hide', message=FALSE, warning=FALSE, cache= TRUE}
+library(wordcloud)
+```
+
+```{r echo=FALSE, cache= TRUE}
+wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
+          max.words=100, random.order=FALSE, rot.per=0.35,
+          colors= RColorBrewer::brewer.pal(8, "Dark2"))
+```
+
+To save the image into a file (e.g., PNG) and adjust its size and resolution, enclose the above code with two lines below:
+
+
+```{r eval=FALSE}
+png(filename="wordcloud.png", width=30, height=30, units="cm", res = 600)
+
+wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
+          max.words=100, random.order=FALSE, rot.per=0.35,
+          colors= RColorBrewer::brewer.pal(8, "Dark2"))
+
+dev.off()
+```
+
+## Including Code
+
+You can include R code in the document as follows:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
