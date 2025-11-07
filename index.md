@@ -88,5 +88,26 @@ dev.off()
 
 ### Linking Demographic Informatic with a Bipartite Chart
 
+Bipartite Chart that we will use here is an interactive chart which can
+show how one categorical variable links to categorical variable. It is
+intended more for presentation, not publication, but it can be used for
+publication is the figure chart makes sense to readers.
+
+Let’s load the data which shows how terms are used in different
+countries. The data is based on my own project.
+
+``` r
+df_bipartite <- read.csv("https://faisalmustafa.github.io/data_visualization/data/nguyen2026b.csv")
+head(df_bipartite)
+```
+
+    ##   X Country                    Term  n
+    ## 1 1     USA   Culturally responsive 65
+    ## 2 2     USA     Culturally relevant 20
+    ## 3 3     USA Multicultural education 15
+    ## 4 4     USA     Cultural competence 13
+    ## 5 5     USA      Culturally diverse  8
+    ## 6 6 Germany   Culturally responsive  4
+
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.

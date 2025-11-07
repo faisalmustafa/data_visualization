@@ -69,6 +69,15 @@ dev.off()
 
 ### Linking Demographic Informatic with a Bipartite Chart
 
+Bipartite Chart that we will use here is an interactive chart which can show how one categorical variable links to categorical variable. It is intended more for presentation, not publication, but it can be used for publication is the figure chart makes sense to readers.
+
+Let's load the data which shows how terms are used in different countries. The data is based on my own project.
+
+```{r cache= TRUE}
+df_bipartite <- read.csv("https://faisalmustafa.github.io/data_visualization/data/nguyen2026b.csv")
+head(df_bipartite)
+```
+
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
