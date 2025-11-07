@@ -112,7 +112,7 @@ library(bipartiteD3)
 
 ```
 
-```{r message=FALSE, warning=FALSE, eval = TRUE, cache= FALSE}
+```{r results='hide', message=FALSE, warning=FALSE, eval = FALSE, cache= FALSE}
 library(bipartiteD3)
 bipartite_D3(df_bipartite, colouroption = 'manual', 
              NamedColourVector = ManualColors, 
@@ -134,7 +134,7 @@ bipartite_D3(df_bipartite, colouroption = 'manual',
 ```
 
 
-
+![here](https://faisalmustafa.github.io/data_visualization/img/bipartite.png)
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
