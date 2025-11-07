@@ -109,5 +109,77 @@ head(df_bipartite)
     ## 5 5     USA      Culturally diverse  8
     ## 6 6 Germany   Culturally responsive  4
 
+The package used to create this bipartite chart is called `bipartiteD3`.
+Before creating the chart, we need to sort the **Country** and **Term**
+in case we want to present the data in order of the frequency.
+
+``` r
+library(dplyr)
+
+SortPrim <- df_bipartite %>%  # sorting for primary variable, in this case **Country**
+  group_by(Country) %>%
+  summarise(Total=sum(n))%>%
+  arrange(desc(Total))
+
+SortSec <- df_bipartite %>%  # sorting for secondary variable, in this case **Term**
+  group_by(Term) %>%
+  summarise(Total=sum(n))%>%
+  arrange(desc(Total))
+```
+
+Furthermore, we need to manually create color for each value. We can use
+the ready color palette but I like to use the color that I prefer.
+
+``` r
+ManualColors <- c(USA = '#E1712B', Turkey = '#16FD22', `South Africa` = '#0D16FF', Australia = '#37BC7D', `South Korea` = '#F700DD', Belgium = '#00D1FE', 
+                  Germany = '#ECE600', UK = '#FE9200', Austria = '#1C762A', Finland = '#980049', France = '#6D2E8B', Indonesia = '#0DFBD8', Israel = '#6E4500', 
+                  Malaysia = '#42707E', Norway = '#C62AFC', Norwegia = '#FE8FDB', Taiwan = '#FE0D91', Philippines = '#859AFE', Brazil = '#A7F47F', 
+                  Canada = '#FEC77D', Chile = '#FF6365', China = '#D5C4FB', Ecuador = '#C2EAC7', Georgia = '#FF9898', Iceland = '#8B8B00', Isarel = '#915375', 
+                  Italy = '#DD8CFF', Japan = '#ABE8F6', Kenya = '#16FEA0', Mexico = '#0D5695', Morocco = '#D40095', Nepal = '#7F8266', `New Zealand` = '#AB0DA1', 
+                  Oman = '#7E38CA', Pakistan = '#AA4016', Samoa = '#00A08D', `Czech Rep.` = '#E7E5A0', UAE = '#FF6C9D' )
+```
+
+Now we are ready to generate the chart using the following code:
+
+``` r
+library(bipartiteD3)
+```
+
+``` r
+library(bipartiteD3)
+bipartite_D3(df_bipartite, colouroption = 'manual', 
+             NamedColourVector = ManualColors, 
+             ColourBy = 1,
+             PercentageDecimals=1, 
+             PrimaryLab = 'Country',
+             SecondaryLab = 'Term',
+             SiteNames = '',
+             SortPrimary = SortPrim$Country,
+             SortSecondary = SortSec$Term,
+             MainFigSize = c(1000, 1500), 
+             IndivFigSize = c(200, 1000),
+             BoxLabPos = c(20, 20),
+             PercPos = c(110,330),
+             BarSize = 20,
+             MinWidth = 10,
+             Pad=5,
+             filename = 'small1976Plot')
+```
+
+![](index_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+<div id="bg">
+
+<img src="https://faisalmustafa.github.io/data_visualization/img/bipartite.png" alt="">
+
+</div>
+
+<figure>
+<img
+src="https://faisalmustafa.github.io/data_visualization/img/bipartite.png"
+alt="here" />
+<figcaption aria-hidden="true">here</figcaption>
+</figure>
+
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.
