@@ -168,12 +168,5 @@ bipartite_D3(df_bipartite, colouroption = 'manual',
 
 ![](index_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-<figure>
-<img
-src="https://faisalmustafa.github.io/data_visualization/img/bipartite.png"
-alt="here" />
-<figcaption aria-hidden="true">here</figcaption>
-</figure>
-
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.
