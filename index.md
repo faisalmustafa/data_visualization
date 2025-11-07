@@ -3,11 +3,20 @@ Quantitative and Qualitative Data Visualization
 Faisal Mustafa,
 November 7, 2025 (Updated on November 07, 2025)
 
-- [WordCoud](#wordcoud)
-- [Including Code](#including-code)
-- [Including Plots](#including-plots)
+- [Quantitative Data Visualization](#quantitative-data-visualization)
+  - [Factor Analysis](#factor-analysis)
+- [Qualitative Data Visualization](#qualitative-data-visualization)
+  - [WordCoud](#wordcoud)
+  - [Linking Demographic Informatic with a Bipartite
+    Chart](#linking-demographic-informatic-with-a-bipartite-chart)
 
-## WordCoud
+## Quantitative Data Visualization
+
+### Factor Analysis
+
+## Qualitative Data Visualization
+
+### WordCoud
 
 WordCloud can be used to dhow the trend in the data. For this purpose,
 let’s use the data that from ……
@@ -20,20 +29,20 @@ df_wordcloud <- read.csv("https://faisalmustafa.github.io/data_visualization/dat
 head(df_wordcloud)
 ```
 
-    ##   X                                x
-    ## 1 1            Culturally responsive
-    ## 2 2 Culturally responsive sustaining
-    ## 3 3         Intercultural competence
-    ## 4 4         sociocultural competence
-    ## 5 5                  Multicuturalism
-    ## 6 6            Culturally responsive
+    ##                               Term
+    ## 1            Culturally responsive
+    ## 2 Culturally responsive sustaining
+    ## 3         Intercultural competence
+    ## 4         sociocultural competence
+    ## 5                  Multicuturalism
+    ## 6            Culturally responsive
 
 Next, let’s create a frequency table based on the data, and remove
 record containing *Not Applicable*.
 
 ``` r
 library(dplyr)
-tb <- as.data.frame(table(df_wordcloud$x)) %>% 
+tb <- as.data.frame(table(df_wordcloud$Term)) %>% 
   filter(Var1 != "Not Applicable")
 ```
 
@@ -56,6 +65,12 @@ instance, let’s use `wordcloud` package.
 library(wordcloud)
 ```
 
+``` r
+wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
+          max.words=100, random.order=FALSE, rot.per=0.35,
+          colors= RColorBrewer::brewer.pal(8, "Dark2"))
+```
+
 ![](index_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 To save the image into a file (e.g., PNG) and adjust its size and
@@ -71,27 +86,7 @@ wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
 dev.off()
 ```
 
-## Including Code
-
-You can include R code in the document as follows:
-
-``` r
-summary(cars)
-```
-
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
-
-## Including Plots
-
-You can also embed plots, for example:
-
-![](index_files/figure-gfm/pressure-1.png)<!-- -->
+### Linking Demographic Informatic with a Bipartite Chart
 
 Note that the `echo = FALSE` parameter was added to the code chunk to
 prevent printing of the R code that generated the plot.

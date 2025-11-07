@@ -5,14 +5,20 @@ date: November 7, 2025 (Updated on `r format(Sys.Date(), '%B %d, %Y')`)
 output: 
   github_document:
     toc: true
-    toc_depth: 2
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## WordCoud
+## Quantitative Data Visualization
+
+### Factor Analysis
+
+## Qualitative Data Visualization
+
+### WordCoud
 
 WordCloud can be used to dhow the trend in the data. For this purpose, let's use the data that from ......
 
@@ -28,7 +34,7 @@ Next, let's create a frequency table based on the data, and remove record contai
 
 ```{r results='hide', message=FALSE, warning=FALSE, cache = TRUE}
 library(dplyr)
-tb <- as.data.frame(table(df_wordcloud$x)) %>% 
+tb <- as.data.frame(table(df_wordcloud$Term)) %>% 
   filter(Var1 != "Not Applicable")
 ```
 
@@ -42,7 +48,7 @@ Now we are ready to create a Word Cloud based on the data. In this instance, let
 library(wordcloud)
 ```
 
-```{r echo=FALSE, cache= TRUE}
+```{r echo=TRUE, cache= TRUE}
 wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
           max.words=100, random.order=FALSE, rot.per=0.35,
           colors= RColorBrewer::brewer.pal(8, "Dark2"))
@@ -61,20 +67,8 @@ wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
 dev.off()
 ```
 
-## Including Code
+### Linking Demographic Informatic with a Bipartite Chart
 
-You can include R code in the document as follows:
 
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
