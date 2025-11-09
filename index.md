@@ -72,7 +72,7 @@ wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
           colors= RColorBrewer::brewer.pal(8, "Dark2"))
 ```
 
-![](index_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+<img src="index_files/figure-gfm/unnamed-chunk-6-1.png" width="2000px" />
 
 To save the image into a file (e.g., PNG) and adjust its size and
 resolution, enclose the above code with two lines below:
@@ -284,7 +284,7 @@ head(df_pie)
 
 #### Step 2. Create a function to set angle of label in the chart (optional)
 
-In the code below, change this to eval = TRUE if you want to check the
+In the code below, change this to `eval = TRUE` if you want to check the
 index of the item you want to change the angle in the image.
 
 ``` r
@@ -301,12 +301,12 @@ angle_pie <- function(df) {
 }
 ```
 
-#### Step 4. Now let’s create the chart using *ggplot2* and *tidyverse*
+#### Step 3. Now let’s create the chart using *ggplot2* and *tidyverse*
 
 ``` r
 library(ggplot2)
 library(tidyverse)
-#| crop: true
+
 df_pie %>%
   ggplot(aes(x = level, y = value, fill = fill, alpha = level)) +
   geom_col(width = 1, color = "gray90", position = position_stack()) +
@@ -320,12 +320,5 @@ df_pie %>%
   theme_minimal() +
   theme(legend.position = "none")
 ```
-
-    ## Warning: The `guide` argument in `scale_*()` cannot be `FALSE`. This was deprecated in
-    ## ggplot2 3.3.4.
-    ## ℹ Please use "none" instead.
-    ## This warning is displayed once every 8 hours.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
 
 <img src="index_files/figure-gfm/unnamed-chunk-18-1.png" width="1500px" />

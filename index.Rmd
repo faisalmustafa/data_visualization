@@ -50,7 +50,7 @@ Now we are ready to create a Word Cloud based on the data. In this instance, let
 library(wordcloud)
 ```
 
-```{r echo=TRUE, cache= TRUE}
+```{r echo=TRUE, out.width = "2000px", cache= TRUE}
 wordcloud(words = tb$Var1 , freq = tb$Freq, scale=c(2,0.2), min.freq = 1,
           max.words=100, random.order=FALSE, rot.per=0.35,
           colors= RColorBrewer::brewer.pal(8, "Dark2"))
@@ -192,11 +192,11 @@ head(df_tpack)
 ```
 #### Step 1. Create a frequency table and combine the three column into one column. Also, we need to add level and fill because it is required in the last step.
 
-``` {r results='hide', message=FALSE, warning=FALSE, cache = FALSE}
+``` {r results='hide', message=FALSE, warning=FALSE, cache = TRUE}
 library(tidyverse)
 ```
 
-``` {r message = FALSE}
+``` {r message = FALSE, cache = TRUE}
 df_pie <- data.frame(name = character(), value = integer())
 
 for (level1 in unique(df_tpack$dimension)) {
@@ -223,7 +223,7 @@ head(df_pie)
 
 #### Step 2. Create a function to set angle of label in the chart (optional)
 
-In the code below, change this to eval = TRUE if you want to check the index of the item you want to change the angle in the image.
+In the code below, change this to `eval = TRUE` if you want to check the index of the item you want to change the angle in the image.
 
 ```{r eval=FALSE}
 
@@ -231,7 +231,7 @@ df_pie
 
 ```
 
-``` {r}
+``` {r cache = TRUE}
 angle_pie <- function(df) {
   ifelse(df$index == 1, 130, # Content focus
          ifelse(df$index == 18, 340, # Duration
@@ -241,12 +241,12 @@ angle_pie <- function(df) {
 }
 ```
 
-#### Step 4. Now let's create the chart using *ggplot2* and *tidyverse*
+#### Step 3. Now let's create the chart using *ggplot2* and *tidyverse*
 
-``` {r out.width = "1500px"}
+``` {r message=FALSE, warning=FALSE, out.width = "1500px", cache = TRUE}
 library(ggplot2)
 library(tidyverse)
-#| crop: true
+
 df_pie %>%
   ggplot(aes(x = level, y = value, fill = fill, alpha = level)) +
   geom_col(width = 1, color = "gray90", position = position_stack()) +
