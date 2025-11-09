@@ -1,7 +1,7 @@
 Quantitative and Qualitative Data Visualization
 ================
 Faisal Mustafa,
-November 7, 2025 (Updated on November 07, 2025)
+November 7, 2025 (Updated on November 09, 2025)
 
 - [Quantitative Data Visualization](#quantitative-data-visualization)
   - [Factor Analysis](#factor-analysis)
@@ -9,6 +9,7 @@ November 7, 2025 (Updated on November 07, 2025)
   - [WordCoud](#wordcoud)
   - [Linking Demographic Informatic with a Bipartite
     Chart](#linking-demographic-informatic-with-a-bipartite-chart)
+  - [Multi-layer Pie Chart](#multi-layer-pie-chart)
 
 ## Quantitative Data Visualization
 
@@ -101,13 +102,13 @@ df_bipartite <- read.csv("https://faisalmustafa.github.io/data_visualization/dat
 head(df_bipartite)
 ```
 
-    ##   X Country                    Term  n
-    ## 1 1     USA   Culturally responsive 65
-    ## 2 2     USA     Culturally relevant 20
-    ## 3 3     USA Multicultural education 15
-    ## 4 4     USA     Cultural competence 13
-    ## 5 5     USA      Culturally diverse  8
-    ## 6 6 Germany   Culturally responsive  4
+    ##   Country                    Term  n
+    ## 1     USA   Culturally responsive 65
+    ## 2     USA     Culturally relevant 20
+    ## 3     USA Multicultural education 15
+    ## 4     USA     Cultural competence 13
+    ## 5     USA      Culturally diverse  8
+    ## 6 Germany   Culturally responsive  4
 
 The package used to create this bipartite chart is called `bipartiteD3`.
 Before creating the chart, we need to sort the **Country** and **Term**
@@ -139,7 +140,8 @@ ManualColors <- c(USA = '#E1712B', Turkey = '#16FD22', `South Africa` = '#0D16FF
                   Oman = '#7E38CA', Pakistan = '#AA4016', Samoa = '#00A08D', `Czech Rep.` = '#E7E5A0', UAE = '#FF6C9D' )
 ```
 
-Now we are ready to generate the chart using the following code:
+Now we are ready to generate the chart using the following code. We will
+use the package `bipartiteD3` to achieve our purpose.
 
 ``` r
 library(bipartiteD3)
@@ -169,9 +171,161 @@ bipartite_D3(df_bipartite, colouroption = 'manual',
 <figure>
 <img
 src="https://faisalmustafa.github.io/data_visualization/img/bipartite.png"
-alt="here" />
-<figcaption aria-hidden="true">here</figcaption>
+style="width:75.0%" alt="bipartite image" />
+<figcaption aria-hidden="true">bipartite image</figcaption>
 </figure>
 
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+### Multi-layer Pie Chart
+
+Using this type of charge is probably the best way to visualize
+codebooks for qualitative data, where one theme consists of several
+sub-theme. Let me give you a better perspective in the following Table.
+
+| Dimension       | Category  | TPACK |   n |
+|-----------------|:---------:|------:|----:|
+| Content focus   | Knowledge |    CK | 100 |
+|                 |           |    PK |  70 |
+|                 |           |   PCK | 150 |
+|                 |           |    TK |  30 |
+|                 |           |   TCK |  45 |
+|                 |           |   TPK |  60 |
+|                 |           |  TPCK |  30 |
+|                 | Practice  |    CK | 120 |
+|                 |           |    PK |  50 |
+|                 |           |   PCK |  45 |
+|                 |           |    TK |  60 |
+|                 |           |   TCK |  55 |
+|                 |           |   TPK |  25 |
+|                 |           |  TPCK |  47 |
+| Active learning | Knowledge |    CK |  75 |
+|                 |           |    PK |  60 |
+|                 |           |   PCK |  75 |
+|                 |           |    TK |  45 |
+|                 |           |   TCK |  30 |
+|                 |           |   TPK |  57 |
+|                 |           |  TPCK |  48 |
+|                 | Practice  |    CK |  39 |
+|                 |           |    PK |  25 |
+|                 |           |   PCK |  56 |
+|                 |           |    TK |  77 |
+|                 |           |   TCK |  36 |
+|                 |           |   TPK |  44 |
+|                 |           |  TPCK |  60 |
+
+In the table above, each dimension of the framework is broken down into
+two categories (i.e., *knowledge*, and *practice*), where there are
+seven aspects of TPACK which contribute to these categories. Presenting
+the data in a table such as this one is not efficient due to space
+limitation. One of the ways to replicate the information in the table is
+by using multi-layer pie chart, where **dimension** is level 1 and
+**TPACK** is level 3.
+
+Let’s create this chart based on
+
+``` r
+set.seed(1)
+df_tpack <- data.frame(dimension = sample(x= c("1. Content focus", "2. Active learning", "3. Material", "4. Duration", "5. Collective participation"),
+                              size = 1000,
+                              replace = TRUE),
+                       category = sample(x = c("Knowledge", "Practice"),
+                              size = 1000,
+                              replace = TRUE),
+                       TPACK = sample(x = c("CK", "PK", "PCK", "TK", "TCK", "TPK", "TPCK"),
+                              size = 1000,
+                              replace = TRUE))
+head(df_tpack)
+```
+
+    ##                     dimension  category TPACK
+    ## 1            1. Content focus  Practice    TK
+    ## 2                 4. Duration Knowledge   PCK
+    ## 3            1. Content focus  Practice    TK
+    ## 4          2. Active learning  Practice   TCK
+    ## 5 5. Collective participation  Practice   TPK
+    ## 6                 3. Material Knowledge   TCK
+
+#### Step 1. Create a frequency table and combine the three column into one column. Also, we need to add level and fill because it is required in the last step.
+
+``` r
+library(tidyverse)
+```
+
+``` r
+df_pie <- data.frame(name = character(), value = integer())
+
+for (level1 in unique(df_tpack$dimension)) {
+  n_level1 <- nrow(df_tpack %>% filter(dimension == level1))
+  df_pie <- bind_rows(df_pie, tibble(name = level1, value = n_level1, level = "1", fill = level1))
+  
+  subthemes <- unique(df_tpack %>% filter(dimension == level1) %>% pull(category))
+  for (level2 in subthemes) {
+    n_level2 <- nrow(df_tpack %>% filter(dimension == level1, category == level2))
+    df_pie <- bind_rows(df_pie, tibble(name = level2, value = n_level2, level = "2", fill = level1))
+    
+    vals <- df_tpack %>% filter(dimension == level1, category == level2) %>% pull(TPACK)
+    uniq_vals <- unique(vals)
+    freqs <- vapply(uniq_vals, function(x) sum(vals == x), integer(1))
+    df_pie <- bind_rows(df_pie, tibble(name = uniq_vals, value = freqs, level = "3", fill = level1))
+  }
+}
+
+df_pie <- df_pie %>% mutate(index = c(1:n()))
+
+head(df_pie)
+```
+
+    ##               name value level             fill index
+    ## 1 1. Content focus   210     1 1. Content focus     1
+    ## 2         Practice   121     2 1. Content focus     2
+    ## 3               TK    20     3 1. Content focus     3
+    ## 4              TCK    32     3 1. Content focus     4
+    ## 5               CK    17     3 1. Content focus     5
+    ## 6               PK    15     3 1. Content focus     6
+
+#### Step 2. Create a function to set angle of label in the chart (optional)
+
+In the code below, change this to eval = TRUE if you want to check the
+index of the item you want to change the angle in the image.
+
+``` r
+df_pie
+```
+
+``` r
+angle_pie <- function(df) {
+  ifelse(df$index == 1, 130, # Content focus
+         ifelse(df$index == 18, 340, # Duration
+                ifelse(df$index == 35, 15, # Active learning
+                       ifelse(df$index == 52, 45, # Collective participation
+                              ifelse(df$index == 69, 265,0))))) # Material
+}
+```
+
+#### Step 4. Now let’s create the chart using *ggplot2* and *tidyverse*
+
+``` r
+library(ggplot2)
+library(tidyverse)
+#| crop: true
+df_pie %>%
+  ggplot(aes(x = level, y = value, fill = fill, alpha = level)) +
+  geom_col(width = 1, color = "gray90", position = position_stack()) +
+  geom_text(aes(label = str_wrap(name, 15)), size = 2, angle = angle_pie(df_pie), position = position_stack(vjust = 0.5 )) +
+  coord_polar(theta = "y") +
+  scale_alpha_manual(values = c("0" = 0, "1" = 1, "2" = 0.7, "3" = 0.5), guide = FALSE) +
+  scale_x_discrete(breaks = NULL) +
+  scale_y_continuous(breaks = NULL) +
+  scale_fill_brewer(palette = "Dark2", na.translate = F) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+    ## Warning: The `guide` argument in `scale_*()` cannot be `FALSE`. This was deprecated in
+    ## ggplot2 3.3.4.
+    ## ℹ Please use "none" instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+<img src="index_files/figure-gfm/unnamed-chunk-18-1.png" width="1500px" />

@@ -10,6 +10,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+knitr::opts_chunk$set(dpi=600)
 ```
 
 ## Quantitative Data Visualization
@@ -106,7 +108,7 @@ ManualColors <- c(USA = '#E1712B', Turkey = '#16FD22', `South Africa` = '#0D16FF
                   Oman = '#7E38CA', Pakistan = '#AA4016', Samoa = '#00A08D', `Czech Rep.` = '#E7E5A0', UAE = '#FF6C9D' )
 ```
 
-Now we are ready to generate the chart using the following code:
+Now we are ready to generate the chart using the following code. We will use the package ```bipartiteD3``` to achieve our purpose.
 ``` {r results='hide', message=FALSE, warning=FALSE, cache = TRUE}
 library(bipartiteD3)
 
@@ -134,7 +136,128 @@ bipartite_D3(df_bipartite, colouroption = 'manual',
 ```
 
 
-![here](https://faisalmustafa.github.io/data_visualization/img/bipartite.png)
+![bipartite image](https://faisalmustafa.github.io/data_visualization/img/bipartite.png){width=75%}
+
+### Multi-layer Pie Chart 
+
+Using this type of charge is probably the best way to visualize codebooks for qualitative data, where one theme consists of several sub-theme. Let me give you a better perspective in the following Table.
+
+| Dimension     | Category  | TPACK   | n  |
+| ------------- |:---------:| -------:|----:|
+| Content focus | Knowledge |   CK    | 100 |
+|               |           |   PK    | 70  |
+|               |           |   PCK   | 150 |
+|               |           |   TK    | 30  |
+|               |           |   TCK   | 45  |
+|               |           |   TPK   | 60  |
+|               |           |   TPCK  | 30  |
+|               | Practice  |   CK    | 120 |
+|               |           |   PK    | 50  |
+|               |           |   PCK   | 45  |
+|               |           |   TK    | 60  |
+|               |           |   TCK   | 55  |
+|               |           |   TPK   | 25  |
+|               |           |   TPCK  | 47  |
+| Active learning | Knowledge |   CK    | 75 |
+|               |           |   PK    | 60  |
+|               |           |   PCK   | 75 |
+|               |           |   TK    | 45  |
+|               |           |   TCK   | 30  |
+|               |           |   TPK   | 57  |
+|               |           |   TPCK  | 48  |
+|               | Practice  |   CK    | 39 |
+|               |           |   PK    | 25  |
+|               |           |   PCK   | 56  |
+|               |           |   TK    | 77  |
+|               |           |   TCK   | 36  |
+|               |           |   TPK   | 44  |
+|               |           |   TPCK  | 60  |
+
+In the table above, each dimension of the framework is broken down into two categories (i.e., *knowledge*, and *practice*), where there are seven aspects of TPACK which contribute to these categories. Presenting the data in a table such as this one is not efficient due to space limitation. One of the ways to replicate the information in the table is by using multi-layer pie chart, where **dimension** is level 1 and **TPACK** is level 3.
+
+Let's create this chart based on
+
+```{r cache = TRUE}
+set.seed(1)
+df_tpack <- data.frame(dimension = sample(x= c("1. Content focus", "2. Active learning", "3. Material", "4. Duration", "5. Collective participation"),
+                              size = 1000,
+                              replace = TRUE),
+                       category = sample(x = c("Knowledge", "Practice"),
+                              size = 1000,
+                              replace = TRUE),
+                       TPACK = sample(x = c("CK", "PK", "PCK", "TK", "TCK", "TPK", "TPCK"),
+                              size = 1000,
+                              replace = TRUE))
+head(df_tpack)
+```
+#### Step 1. Create a frequency table and combine the three column into one column. Also, we need to add level and fill because it is required in the last step.
+
+``` {r results='hide', message=FALSE, warning=FALSE, cache = FALSE}
+library(tidyverse)
+```
+
+``` {r message = FALSE}
+df_pie <- data.frame(name = character(), value = integer())
+
+for (level1 in unique(df_tpack$dimension)) {
+  n_level1 <- nrow(df_tpack %>% filter(dimension == level1))
+  df_pie <- bind_rows(df_pie, tibble(name = level1, value = n_level1, level = "1", fill = level1))
+  
+  subthemes <- unique(df_tpack %>% filter(dimension == level1) %>% pull(category))
+  for (level2 in subthemes) {
+    n_level2 <- nrow(df_tpack %>% filter(dimension == level1, category == level2))
+    df_pie <- bind_rows(df_pie, tibble(name = level2, value = n_level2, level = "2", fill = level1))
+    
+    vals <- df_tpack %>% filter(dimension == level1, category == level2) %>% pull(TPACK)
+    uniq_vals <- unique(vals)
+    freqs <- vapply(uniq_vals, function(x) sum(vals == x), integer(1))
+    df_pie <- bind_rows(df_pie, tibble(name = uniq_vals, value = freqs, level = "3", fill = level1))
+  }
+}
+
+df_pie <- df_pie %>% mutate(index = c(1:n()))
+
+head(df_pie)
+```
 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#### Step 2. Create a function to set angle of label in the chart (optional)
+
+In the code below, change this to eval = TRUE if you want to check the index of the item you want to change the angle in the image.
+
+```{r eval=FALSE}
+
+df_pie
+
+```
+
+``` {r}
+angle_pie <- function(df) {
+  ifelse(df$index == 1, 130, # Content focus
+         ifelse(df$index == 18, 340, # Duration
+                ifelse(df$index == 35, 15, # Active learning
+                       ifelse(df$index == 52, 45, # Collective participation
+                              ifelse(df$index == 69, 265,0))))) # Material
+}
+```
+
+#### Step 4. Now let's create the chart using *ggplot2* and *tidyverse*
+
+``` {r out.width = "1500px"}
+library(ggplot2)
+library(tidyverse)
+#| crop: true
+df_pie %>%
+  ggplot(aes(x = level, y = value, fill = fill, alpha = level)) +
+  geom_col(width = 1, color = "gray90", position = position_stack()) +
+  geom_text(aes(label = str_wrap(name, 15)), size = 2, angle = angle_pie(df_pie), position = position_stack(vjust = 0.5 )) +
+  coord_polar(theta = "y") +
+  scale_alpha_manual(values = c("0" = 0, "1" = 1, "2" = 0.7, "3" = 0.5), guide = FALSE) +
+  scale_x_discrete(breaks = NULL) +
+  scale_y_continuous(breaks = NULL) +
+  scale_fill_brewer(palette = "Dark2", na.translate = F) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
