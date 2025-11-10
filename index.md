@@ -1,7 +1,7 @@
 Quantitative and Qualitative Data Visualization
 ================
 Faisal Mustafa,
-November 7, 2025 (Updated on November 09, 2025)
+November 7, 2025 (Updated on November 10, 2025)
 
 - [Quantitative Data Visualization](#quantitative-data-visualization)
   - [Factor Analysis](#factor-analysis)
